@@ -6,7 +6,7 @@ AddEventHandler("Casino:Client:StartChipPurchase", function()
     end
 
     local cash = LocalPlayer.state.Character:GetData("Cash") or 0
-    local chips = exports['sandbox-casino']:ChipsGet()
+    local chips = _currentChips
 
     local buyMenu = {
         main = {
@@ -45,12 +45,13 @@ AddEventHandler("Casino:Client:StartChipPurchase", function()
 
         exports['sandbox-hud']:ListMenuShow(buyMenu)
     else
-        exports["sandbox-hud"]:NotifError("Not Enough Cash - Minimum is $100")
+        exports["sandbox-hud"]:Notification("error", "Not Enough Cash - Minimum is $100")
     end
 end)
 
 AddEventHandler("Casino:Client:ConfirmChipPurchase", function(data)
     exports["sandbox-base"]:ServerCallback("Casino:BuyChips", data.amount)
+    TriggerEvent("Casino:Client:UpdateChips")
 end)
 
 AddEventHandler("Casino:Client:StartChipSell", function()
@@ -59,7 +60,7 @@ AddEventHandler("Casino:Client:StartChipSell", function()
     end
 
     local cash = LocalPlayer.state.Character:GetData("Cash") or 0
-    local chips = exports['sandbox-casino']:ChipsGet()
+    local chips = _currentChips
 
     local buyMenu = {
         main = {
@@ -97,12 +98,13 @@ AddEventHandler("Casino:Client:StartChipSell", function()
 
         exports['sandbox-hud']:ListMenuShow(buyMenu)
     else
-        exports["sandbox-hud"]:NotifError("No Chips to Sell")
+        exports["sandbox-hud"]:Notification("error", "No Chips to Sell")
     end
 end)
 
 AddEventHandler("Casino:Client:ConfirmChipSell", function(data)
     exports["sandbox-base"]:ServerCallback("Casino:SellChips", data.amount)
+    TriggerEvent("Casino:Client:UpdateChips")
 end)
 
 _CASINO = _CASINO or {}
@@ -120,7 +122,7 @@ _CASINO.Chips = {
     end,
     Has = function(self, amount)
         if amount > 0 then
-            return exports['sandbox-casino']:ChipsGet() >= amount
+            return _currentChips >= amount
         end
         return false
     end

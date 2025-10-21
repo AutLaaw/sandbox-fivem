@@ -100,7 +100,7 @@ AddEventHandler("Casino:Client:Startup", function()
                 description = "Double Down!",
                 event = "Casino:Client:RecievePromptData",
                 data = { state = "double" },
-                disabled = data.currentBet > exports['sandbox-casino']:ChipsGet()
+                disabled = data.currentBet > _currentChips
             })
         end
 
@@ -121,7 +121,7 @@ AddEventHandler("Casino:Client:Startup", function()
             end
         elseif res?.timeout then
             cb(false)
-            exports["sandbox-hud"]:NotifError("Ran Out of Time...")
+            exports["sandbox-hud"]:Notification("error", "Ran Out of Time...")
         else
             cb(false)
         end
@@ -266,9 +266,9 @@ AddEventHandler("Casino:Client:JoinBlackjack", function(_, data)
                 end)
             else
                 if table == "vip" then
-                    exports["sandbox-hud"]:NotifError("You're Not a VIP Loser")
+                    exports["sandbox-hud"]:Notification("error", "You're Not a VIP Loser")
                 else
-                    exports["sandbox-hud"]:NotifError("Someone Is Sat There")
+                    exports["sandbox-hud"]:Notification("error", "Someone Is Sat There")
                 end
             end
         end)
@@ -342,7 +342,7 @@ RegisterNetEvent("Casino:Client:BlackjackConfirmBet", function(betAmounts, table
             end
         end)
     elseif res?.timeout then
-        exports["sandbox-hud"]:NotifError("Ran Out of Time...")
+        exports["sandbox-hud"]:Notification("error", "Ran Out of Time...")
         exports['sandbox-hud']:InfoOverlayClose()
     else
         exports['sandbox-hud']:InfoOverlayClose()
@@ -544,7 +544,7 @@ function ShowGameStateUI(state)
         local dealerHand = CountBlackjackHand(state.DealerCards)
         local stateLabel = "Blackjack"
         local myHand = 0
-        local myBalance = math.floor(exports['sandbox-casino']:ChipsGet())
+        local myBalance = math.floor(_currentChips)
         local myBet = 0
 
         if state.Status == 1 then

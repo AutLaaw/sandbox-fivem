@@ -38,12 +38,12 @@ AddEventHandler("Characters:Client:Spawn", function()
 						)
 					elseif not inRange and _spawnedInteractionPeds[k] then
 						DeletePed(_spawnedInteractionPeds[k])
-						exports.ox_target:removeEntity(_spawnedInteractionPeds[k])
+						exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[k])
 						_spawnedInteractionPeds[k] = nil
 					end
 				elseif _spawnedInteractionPeds[k] then
 					DeletePed(_spawnedInteractionPeds[k])
-					exports.ox_target:removeEntity(_spawnedInteractionPeds[k])
+					exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[k])
 					_spawnedInteractionPeds[k] = nil
 				end
 			end
@@ -108,7 +108,7 @@ exports("Remove", function(id)
 		_interactionPeds[id] = nil
 		if _spawnedInteractionPeds[id] then
 			DeleteEntity(_spawnedInteractionPeds[id])
-			exports.ox_target:removeEntity(_spawnedInteractionPeds[id])
+			exports.ox_target:removeLocalEntity(_spawnedInteractionPeds[id])
 			_spawnedInteractionPeds[id] = nil
 		end
 	end
@@ -172,28 +172,37 @@ function CreateDumbAssPed(model, coords, heading, menu, icon, scenario, anim, co
 		TaskStartScenarioInPlace(ped, scenario, 0, true)
 	end
 
-	if menu then
+	if menu and #menu > 0 then
 		local oxOptions = {}
 		for i, option in ipairs(menu) do
 			local oxOption = {
 				label = option.label or option.text,
 				icon = option.icon or "fa-solid fa-shop",
 				distance = option.distance or option.minDist or 2.0,
-				groups = option.groups or {},
+				groups = option.groups or nil,
 				permissionKey = option.permissionKey or nil,
 				reqDuty = option.reqDuty or false,
 				workplace = option.workplace or nil,
+				tempjob = option.tempjob or nil,
+				rep = option.rep or nil,
 				onSelect = function()
 					if option.event then
 						TriggerEvent(option.event, (option.data or {}))
+					else
+						option.onSelect()
 					end
-				end
+				end,
+				canInteract = option.isEnabled or function()
+					return true
+				end,
 			}
 
 			table.insert(oxOptions, oxOption)
 		end
 
-		exports.ox_target:addLocalEntity(ped, oxOptions)
+		if #oxOptions > 0 then
+			exports.ox_target:addLocalEntity(ped, oxOptions)
+		end
 	end
 
 	return ped
