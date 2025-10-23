@@ -493,29 +493,84 @@ lib.callback.register('ox_inventory:usingItem', function(data, noAnim)
             item.disable.combat = true
         end
 
-        local success = (not item.usetime or noAnim or lib.progressBar({
-            duration = item.usetime,
-            label = item.label or locale('using', data.metadata.label or data.label),
-            useWhileDead = item.useWhileDead,
-            canCancel = item.cancel,
-            disable = item.disable,
-            anim = item.anim or item.scenario,
-            prop = item.prop --[[@as ProgressProps]]
-        })) and not PlayerData.dead
+        if not item.usetime or noAnim then
+            local success = not PlayerData.dead
+            
+            if success then
+                if item.notification then
+                    --lib.notify({ description = item.notification })
+                    exports['sandbox-hud']:Notification("info", item.notification)
+                end
 
-        if success then
-            if item.notification then
-                --lib.notify({ description = item.notification })
-                exports['sandbox-hud']:Notification("info", item.notification)
+                if item.status then
+                    if client.setPlayerStatus then
+                        client.setPlayerStatus(item.status)
+                    end
+                end
+
+                return true
             end
-
-            if item.status then
-                if client.setPlayerStatus then
-                    client.setPlayerStatus(item.status)
+        else
+            -- Use sandbox-hud progress bar instead of ox_lib
+            local progressAction = {
+                name = data.name,
+                duration = item.usetime,
+                label = item.label or locale('using', data.metadata.label or data.label),
+                useWhileDead = item.useWhileDead,
+                canCancel = item.cancel,
+                controlDisables = {
+                    disableMovement = (item.disable and item.disable.movement) or false,
+                    disableCarMovement = (item.disable and item.disable.carMovement) or false,
+                    disableMouse = (item.disable and item.disable.mouse) or false,
+                    disableCombat = (item.disable and item.disable.combat) or true,
+                },
+                animation = item.anim or item.scenario,
+                prop = item.prop,
+                disarm = true,
+                ignoreModifier = false
+            }
+            
+            -- Convert ox_lib animation format to sandbox-hud format if needed
+            if progressAction.animation and type(progressAction.animation) == 'table' then
+                if progressAction.animation.dict and progressAction.animation.clip then
+                    progressAction.animation = {
+                        animDict = progressAction.animation.dict,
+                        anim = progressAction.animation.clip,
+                        flags = progressAction.animation.flags or 1
+                    }
                 end
             end
+            
+            -- Convert ox_lib prop format to sandbox-hud format if needed
+            if progressAction.prop and type(progressAction.prop) == 'table' then
+                if progressAction.prop.model then
+                    progressAction.prop = {
+                        model = progressAction.prop.model,
+                        bone = progressAction.prop.bone or 60309,
+                        coords = progressAction.prop.coords or { x = 0.0, y = 0.0, z = 0.0 },
+                        rotation = progressAction.prop.rotation or { x = 0.0, y = 0.0, z = 0.0 }
+                    }
+                end
+            end
+            
+            exports['sandbox-hud']:Progress(progressAction, function(cancelled)
+                local success = not cancelled and not PlayerData.dead
+                
+                if success then
+                    if item.notification then
+                        --lib.notify({ description = item.notification })
+                        exports['sandbox-hud']:Notification("info", item.notification)
+                    end
 
-            return true
+                    if item.status then
+                        if client.setPlayerStatus then
+                            client.setPlayerStatus(item.status)
+                        end
+                    end
+                end
+            end)
+            
+            return true -- Return true immediately for async progress
         end
     end
 end)
