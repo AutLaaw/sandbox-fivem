@@ -35,15 +35,15 @@ AddEventHandler('onClientResourceStart', function(resource)
 			TogglePhone()
 		end)
 
-		exports["sandbox-kbs"]:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
-			if _call ~= nil then
-				if _call.state == 1 then
-					exports['sandbox-phone']:CallAccept()
-				else
-					exports['sandbox-phone']:CallEnd()
-				end
-			end
-		end)
+		--exports["sandbox-kbs"]:Add("phone_ansend", "", "keyboard", "Phone - Accept/End Call", function()
+		--	if _call ~= nil then
+		--		if _call.state == 1 then
+		--			exports['sandbox-phone']:CallAccept()
+		--		else
+		--			exports['sandbox-phone']:CallEnd()
+		--		end
+		--	end
+		--end)
 
 		exports["sandbox-kbs"]:Add("phone_answer", "", "keyboard", "Phone - Accept Call", function()
 			if _call ~= nil then
