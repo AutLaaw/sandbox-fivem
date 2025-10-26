@@ -13,29 +13,28 @@ function EMSItems()
 	-- end)
 
 	exports.ox_inventory:RegisterUse("morphine", "MedicalItems", function(source, item)
-		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-			exports['sandbox-damage']:EffectsPainkiller(source, 1)
-		end
+		-- ox_inventory already removed the item
+		exports['sandbox-damage']:EffectsPainkiller(source, 1)
 	end)
 
 	exports.ox_inventory:RegisterUse("oxy", "MedicalItems", function(source, item)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		local pState = Player(source).state
-		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
-			exports['sandbox-damage']:EffectsPainkiller(source, 2)
+		
+		-- ox_inventory already removed the item
+		exports['sandbox-damage']:EffectsPainkiller(source, 2)
 
-			if pState.healTicks ~= nil then
-				local f = pState.healTicks
-				for i = 1, 5 do
-					table.insert(f, "5")
-				end
-				pState.healTicks = f
-			else
-				pState.healTicks = { "5", "5", "5", "5", "5" }
+		if pState.healTicks ~= nil then
+			local f = pState.healTicks
+			for i = 1, 5 do
+				table.insert(f, "5")
 			end
-			Wait(100)
-			TriggerClientEvent("Damage:Client:Ticks:Heal", source)
+			pState.healTicks = f
+		else
+			pState.healTicks = { "5", "5", "5", "5", "5" }
 		end
+		Wait(100)
+		TriggerClientEvent("Damage:Client:Ticks:Heal", source)
 	end)
 
 	exports.ox_inventory:RegisterUse("bandage", "MedicalItems", function(source, item)
@@ -44,7 +43,8 @@ function EMSItems()
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		-- ox_inventory already removed the item, so we don't need to remove it again
+		do
 			local heal = 10
 			if curr < (max * 0.75) then
 				local p = promise.new()
@@ -74,7 +74,8 @@ function EMSItems()
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		-- ox_inventory already removed the item
+		do
 			local p = promise.new()
 			local heal = 15
 			if curr + heal > max then
@@ -108,7 +109,9 @@ function EMSItems()
 		local curr = GetEntityHealth(ped)
 		local max = GetEntityMaxHealth(ped)
 		local pState = Player(source).state
-		if exports.ox_inventory:RemoveSlot(item.Owner, item.Name, 1, item.Slot, 1) then
+		
+		-- ox_inventory already removed the item
+		do
 			local p = promise.new()
 			local heal = 30
 			if curr + heal > max then
