@@ -110,7 +110,7 @@ RegisterNUICallback('getSettings', function(data, cb)
 end)
 
 RegisterNUICallback('getPhoneKey', function(data, cb)
-    local phoneKey = exports["sandbox-keybinds"]:GetKey("phone_toggle")
+    local phoneKey = exports["sandbox-kbs"]:GetKey("phone_toggle")
     cb(phoneKey or "M")
 end)
 
@@ -466,6 +466,7 @@ lib.callback.register('ox_inventory:usingItem', function(data, noAnim)
     local item = Items[data.name]
 
     if item and usingItem then
+
         if not item.client then return true end
         ---@cast item +OxClientProps
         item = item.client
@@ -477,8 +478,8 @@ lib.callback.register('ox_inventory:usingItem', function(data, noAnim)
         if item.prop then
             if item.prop[1] then
                 for i = 1, #item.prop do
-                    if type(item.prop) == 'string' then
-                        item.prop = Animations.prop[item.prop[i]]
+                    if type(item.prop[i]) == 'string' then
+                        item.prop[i] = Animations.prop[item.prop[i]]
                     end
                 end
             elseif type(item.prop) == 'string' then
@@ -489,35 +490,96 @@ lib.callback.register('ox_inventory:usingItem', function(data, noAnim)
         if not item.disable then
             item.disable = { combat = true }
         elseif item.disable.combat == nil then
-            -- Backwards compatibility; you probably don't want people shooting while eating and bandaging anyway
             item.disable.combat = true
         end
 
-        local success = (not item.usetime or noAnim or lib.progressBar({
+        if not item.usetime or noAnim then
+
+            local success = not PlayerData.dead
+            if success then
+                if item.notification then
+                    exports['sandbox-hud']:Notification("info", item.notification)
+                end
+                if item.status and client.setPlayerStatus then
+                    client.setPlayerStatus(item.status)
+                end
+                
+                return true
+            end
+            return false
+        end
+
+        local label = item.label or locale('using', (data.metadata and data.metadata.label) or data.label)
+        local disables = {
+            disableMovement    = item.disable and (item.disable.move or item.disable.movement) or false,
+            disableCarMovement = item.disable and (item.disable.car or item.disable.vehicle) or false,
+            disableMouse       = item.disable and (item.disable.mouse) or false,
+            disableCombat      = item.disable and (item.disable.combat ~= false) or true,
+        }
+
+        local action = {
+            name = data.name or "use_item",
             duration = item.usetime,
-            label = item.label or locale('using', data.metadata.label or data.label),
+            label = label,
             useWhileDead = item.useWhileDead,
-            canCancel = item.cancel,
-            disable = item.disable,
-            anim = item.anim or item.scenario,
-            prop = item.prop --[[@as ProgressProps]]
-        })) and not PlayerData.dead
+            canCancel = (item.cancel ~= false),
+            controlDisables = disables,
+        }
+
+        if item.anim then
+            if type(item.anim) == 'table' then
+                local dict  = item.anim.dict or item.anim.animDict
+                local clip  = item.anim.clip or item.anim.anim
+                local flags = item.anim.flag or item.anim.flags
+                if dict and clip then
+                    local defaultFlags = (disables.disableMovement and 1) or 49
+                    action.animation = {
+                        animDict = dict,
+                        anim = clip,
+                        flags = flags or defaultFlags,
+                    }
+                elseif item.anim.task or item.scenario then
+                    action.animation = { task = item.anim.task or item.scenario }
+                elseif type(item.anim[1]) == 'string' and type(item.anim[2]) == 'string' then
+                    local defaultFlags = (disables.disableMovement and 1) or 49
+                    action.animation = {
+                        animDict = item.anim[1],
+                        anim = item.anim[2],
+                        flags = item.anim[3] or defaultFlags,
+                    }
+                end
+            elseif type(item.anim) == 'string' then
+                action.animation = { task = item.anim }
+            end
+        elseif item.scenario then
+            action.animation = { task = item.scenario }
+        end
+
+        if item.prop then
+            action.prop = item.prop
+        end
+
+        local p = promise.new()
+        exports['sandbox-hud']:Progress(action, function(cancelled)
+            p:resolve(not cancelled)
+        end)
+        local progressed = Citizen.Await(p)
+
+        local success = (progressed == true) and not PlayerData.dead
 
         if success then
             if item.notification then
                 --lib.notify({ description = item.notification })
                 exports['sandbox-hud']:Notification("info", item.notification)
             end
-
-            if item.status then
-                if client.setPlayerStatus then
-                    client.setPlayerStatus(item.status)
-                end
+            if item.status and client.setPlayerStatus then
+                client.setPlayerStatus(item.status)
             end
-
             return true
         end
     end
+
+    return false
 end)
 
 local function canUseItem(isAmmo)
