@@ -60,7 +60,7 @@ AddEventHandler("Characters:Client:Spawn", function()
 	while GlobalState["MBA:Interior"] == nil do
 		Wait(5)
 	end
-	print('GlobalState["MBA:Interior"]', GlobalState["MBA:Interior"])
+	-- print('GlobalState["MBA:Interior"]', GlobalState["MBA:Interior"])
 	SetMBAInterior(GlobalState["MBA:Interior"])
 end)
 

@@ -6,7 +6,6 @@ client_script("@sandbox-pwnzor/client/check.lua")
 
 author("Dr Nick")
 version("v1.0.0")
-url("https://www.mythicrp.com")
 
 client_scripts({
 	"client/**/*.lua",
