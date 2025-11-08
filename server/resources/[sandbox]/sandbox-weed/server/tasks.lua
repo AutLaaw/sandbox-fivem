@@ -75,7 +75,7 @@ function RegisterTasks()
 			for k, v in pairs(_plants) do
 				if (os.time() - v.plant.planted) >= Config.Lifetime then
 					exports['sandbox-base']:LoggerTrace("Weed",
-						"Deleting Weed Plant Because Some Dumb Cunt Didn't Harvest It")
+						"Deleting Weed Plant Because Someone Didn't Harvest It")
 					exports['sandbox-weed']:PlantingDelete(k)
 				else
 					if v.plant.growth < 100 then
@@ -156,7 +156,7 @@ function RegisterTasks()
 					end
 				else
 					exports['sandbox-base']:LoggerTrace("Weed",
-						"Deleting Weed Plant Because Some Dumb Cunt Didn't Water It")
+						"Deleting Weed Plant Because Someone Didn't Water It")
 					exports['sandbox-weed']:PlantingDelete(k)
 				end
 			end

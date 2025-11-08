@@ -88,7 +88,7 @@ export default (props) => {
 					description: 'Lamborghini Aventador (S+)',
 					data: {
 						Job: 'Boosting',
-						Data: 'Retard',
+						Data: 'Checking',
 					},
 				},
 			]);

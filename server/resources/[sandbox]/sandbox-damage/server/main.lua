@@ -1,5 +1,5 @@
 _damagedLimbs = {}
-_deadCunts = {}
+_deadPerson = {}
 
 function table.copy(t)
 	local u = {}
@@ -18,12 +18,12 @@ AddEventHandler('onResourceStart', function(resource)
 			local char = exports['sandbox-characters']:FetchCharacterSource(source)
 			if char ~= nil then
 				local sid = char:GetData("SID")
-				if _deadCunts[sid] ~= nil then
+				if _deadPerson[sid] ~= nil then
 					local pState = Player(source).state
 					pState.isDead = true
-					pState.deadData = _deadCunts[sid].deadData
-					pState.isDeadTime = _deadCunts[sid].isDeadTime
-					pState.releaseTime = _deadCunts[sid].releaseTime
+					pState.deadData = _deadPerson[sid].deadData
+					pState.isDeadTime = _deadPerson[sid].isDeadTime
+					pState.releaseTime = _deadPerson[sid].releaseTime
 
 					Wait(100)
 				end
@@ -124,7 +124,7 @@ RegisterNetEvent("Ped:Server:Died", function()
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
 		local pState = Player(src).state
-		_deadCunts[char:GetData("SID")] = {
+		_deadPerson[char:GetData("SID")] = {
 			deadData = pState.deadData,
 			isDeadTime = pState.isDeadTime,
 			releaseTime = pState.releaseTime,
@@ -167,7 +167,7 @@ RegisterNetEvent("Damage:Server:Revived", function(wasMinor, wasFieldTreatment)
 	local src = source
 	local char = exports['sandbox-characters']:FetchCharacterSource(src)
 	if char ~= nil then
-		_deadCunts[char:GetData("SID")] = nil
+		_deadPerson[char:GetData("SID")] = nil
 		if not wasMinor and not wasFieldTreatment then
 			exports['sandbox-base']:LoggerTrace(
 				"Damage",

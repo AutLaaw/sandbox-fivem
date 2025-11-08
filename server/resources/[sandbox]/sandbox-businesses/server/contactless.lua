@@ -3,7 +3,7 @@ _pendingContactless = {}
 AddEventHandler("Businesses:Server:Startup", function()
     exports["sandbox-base"]:RegisterServerCallback("Contactless:Create", function(source, data, cb)
         local char = exports['sandbox-characters']:FetchCharacterSource(source)
-        -- Should probably do some better checking here but I cannot be fucked
+        -- Should probably do some better checking here later
         if char and data and data.job and data.terminalId and data.payment and data.payment > 0 and data.payment <= 25000 then
             if Player(source).state.onDuty == data.job then
                 if not _pendingContactless[data.terminalId] then

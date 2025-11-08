@@ -582,9 +582,9 @@ function StartFishingNetAnimation()
     end)
 end
 
-function DoFishingNetCatchingAnimation()
+-- function DoFishingNetCatchingAnimation()
     -- TODO
-end
+-- end
 
 function StartFishingControlBlockers()
     CreateThread(function()

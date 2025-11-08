@@ -205,8 +205,8 @@ export default ({ canBoost, banned, reputations }) => {
 			setBanList(Array());
 
 			// setBanList([
-			// 	{ LSUNDGBan: ["Boosting"], SID: 1, First: "Fucking", Last: "Cunt", RacingAlias: "monkaSteer" },
-			// 	{ LSUNDGBan: ["Boosting"], SID: 1, First: "Fucking", Last: "Cunt", RacingAlias: "monkaSteer" },
+			// 	{ LSUNDGBan: ["Boosting"], SID: 1, First: "Ducking", Last: "Here", RacingAlias: "monkaSteer" },
+			// 	{ LSUNDGBan: ["Boosting"], SID: 1, First: "Ducking", Last: "Here", RacingAlias: "monkaSteer" },
 			// ]);
 		}
 		setBanLoading(false);

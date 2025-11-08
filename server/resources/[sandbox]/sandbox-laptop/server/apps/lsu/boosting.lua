@@ -102,12 +102,12 @@ AddEventHandler("Laptop:Server:RegisterCallbacks", function()
                         WHERE LSUNDGBan IS NOT NULL
                     ]], {}, function(results)
                         if results and #results > 0 then
-                            local cunts = {}
+                            local checking = {}
                             for _, v in ipairs(results) do
                                 v.RacingAlias = v.Profiles and v.Profiles.redline and v.Profiles.redline.name or nil
-                                table.insert(cunts, v)
+                                table.insert(checking, v)
                             end
-                            cb(cunts)
+                            cb(checking)
                         else
                             cb(false)
                         end

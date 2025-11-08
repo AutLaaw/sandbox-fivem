@@ -296,10 +296,10 @@ RegisterNetEvent("Police:Client:RemoveSpikes", function(owner)
 end)
 
 -- watching each object then deleting after 5s
-AddEventHandler("Police:Client:SpikeyBois", function(x, y, z, obj, cunts, owner)
+AddEventHandler("Police:Client:SpikeyBois", function(x, y, z, obj, check, owner)
 	local pos = vector3(x, y, z)
 	local timer = 0
-	while timer < cunts and not forceDelete[owner] do
+	while timer < check and not forceDelete[owner] do
 		local veh = GetVehiclePedIsIn(LocalPlayer.state.ped)
 		if veh ~= 0 and LocalPlayer.state.loggedIn then
 			local driver = GetPedInVehicleSeat(veh, -1)

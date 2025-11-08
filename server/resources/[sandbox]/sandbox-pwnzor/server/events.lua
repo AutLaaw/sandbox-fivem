@@ -1,5 +1,5 @@
 --[[
-    This registers fake events which we do not have at all, but a lot of retarded
+    This registers fake events which we do not have at all, but some cheat
     menus will try to trigger them. Might as well kill the braindead fish in the barrel
 ]]
 --

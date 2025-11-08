@@ -64,7 +64,7 @@ AddEventHandler("Wardrobe:Client:Equip", function(data)
 	end)
 end)
 
-RegisterNetEvent("Wardrobe:Client:ShowBitch", function(eventRoutine)
+RegisterNetEvent("Wardrobe:Client:ShowWardrobe", function(eventRoutine)
 	exports['sandbox-ped']:WardrobeShow()
 end)
 

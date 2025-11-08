@@ -239,13 +239,13 @@ function StartBowlingShit(alleyId, isSecondTry, currentPinsDown, currentHitPins)
         0.0)
     ClearPedTasks(LocalPlayer.state.ped)
 
-    local pinsBitch = true
+    local pinsPitch = true
     local pinsTarget = false
     SetTimeout(4000, function()
-        pinsBitch = false
+        pinsPitch = false
     end)
 
-    while pinsBitch do
+    while pinsPitch do
         if #(GetEntityCoords(ball) - alleyData.endZone) <= 1.5 then
             CreateThread(function()
                 Wait(750)

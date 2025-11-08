@@ -54,15 +54,15 @@ export default (props) => {
 	];
 
 	useEffect(() => {
-		const Cunt = (e) => {
+		const handleKeyDown = (e) => {
 			if (allowedKeys.includes(e.key)) {
 				onButtonPress(e.key);
 			}
 		};
 
-		window.addEventListener('keydown', Cunt);
+		window.addEventListener('keydown', handleKeyDown);
 		return () => {
-			window.removeEventListener('keydown', Cunt);
+			window.removeEventListener('keydown', handleKeyDown);
 		};
 	});
 

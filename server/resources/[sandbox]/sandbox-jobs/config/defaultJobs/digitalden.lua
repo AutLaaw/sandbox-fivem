@@ -8,7 +8,7 @@ table.insert(_defaultJobData, {
 	Grades = {
 		{
 			Id = "bbemployee",
-			Name = "Basic Bitch Employee",
+			Name = "Basic Employee",
 			Level = 1,
 			Permissions = {
 				JOB_STORAGE = true,

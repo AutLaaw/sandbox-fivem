@@ -984,7 +984,7 @@ export const initialState = {
 						{
 							time: 1629380840 * 1000,
 							title: 'Test',
-							description: 'Test Description <b>Bitch</b>',
+							description: 'Test Description <b>John</b>',
 						},
 					],
 					businessLogo: 'https://i.imgur.com/EU7HQji.png',

@@ -136,7 +136,7 @@ export default (props) => {
 	};
 
 	const btnClick = (value) => {
-		// TODO : Make this less fucking retarded
+		// TODO : Make this code cleaner
 		let tmp = dialNumber.replace(/\-/g, '').replace(/\_/g, '') + value;
 		if (tmp.length <= 10) {
 			if (tmp.length > 3 && tmp.length < 7)

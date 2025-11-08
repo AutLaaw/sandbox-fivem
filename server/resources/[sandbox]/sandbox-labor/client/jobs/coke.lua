@@ -15,7 +15,7 @@ local _, relHash = AddRelationshipGroup("COKE_PED")
 SetRelationshipBetweenGroups(5, `COKE_PED`, `PLAYER`)
 SetRelationshipBetweenGroups(5, `PLAYER`, `COKE_PED`)
 
-local _dumbcunts = {
+local _jobduty = {
 	police = true,
 	ems = true,
 	government = true,
@@ -123,7 +123,7 @@ AddEventHandler("Labor:Client:Setup", function()
 				event = "Coke:Client:StartWork",
 				isEnabled = function()
 					return LocalPlayer.state.Character:GetData("TempJob") == nil
-						and not _dumbcunts[LocalPlayer.state.onDuty]
+						and not _jobduty[LocalPlayer.state.onDuty]
 						and not GlobalState["CokeRunActive"]
 						and (not GlobalState["CokeRunCD"] or GetCloudTimeAsInt() > GlobalState["CokeRunCD"])
 						and not GlobalState["RestartLockdown"]

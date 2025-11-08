@@ -292,7 +292,7 @@ export default ({ onNav, data }) => {
 						inputValue={state.workersInput}
 						options={workers}
 						setOptions={setWorkers}
-						job={onDuty ?? 'fuck'}
+						job={onDuty ?? 'none'}
 						onChange={(e, nv) => {
 							if (nv.length == 0) {
 								setState({

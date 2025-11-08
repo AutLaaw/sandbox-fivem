@@ -119,7 +119,7 @@ exports("CalculateMaxHp", function()
 end)
 
 exports("WasDead", function(sid)
-    return _deadCunts[sid] ~= nil
+    return _deadPerson[sid] ~= nil
 end)
 
 exports("Revive", function(fieldTreat)

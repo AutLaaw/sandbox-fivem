@@ -125,7 +125,7 @@ AddStateBagChangeHandler('ox_lib:setVehicleProperties', '', function(bagName, _,
     Wait(200)
 
     -- this delay and second-setting of vehicle properties hopefully counters the
-    -- weird sync/ownership/shitfuckery when setting props on server-side vehicles
+    -- weird sync/ownership when setting props on server-side vehicles
     if NetworkGetEntityOwner(entity) == cache.playerId then
         lib.setVehicleProperties(entity, value)
         Entity(entity).state:set('ox_lib:setVehicleProperties', nil, true)

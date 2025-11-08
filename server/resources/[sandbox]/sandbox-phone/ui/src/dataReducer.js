@@ -2089,7 +2089,7 @@ export const initialState = {
 									id: 88,
 									track: 2,
 									race: 12,
-									alias: 'Cunt',
+									alias: 'John',
 									lap_start: 1687872610,
 									lap_end: 1687872710,
 									laptime: 100,

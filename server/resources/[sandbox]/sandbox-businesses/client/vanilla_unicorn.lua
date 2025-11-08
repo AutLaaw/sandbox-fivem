@@ -139,7 +139,7 @@ AddEventHandler('Businesses:Client:Startup', function()
                         action = function()
                             local nearestStripper = GetNearbyStripper()
                             if nearestStripper then
-                                MakeItRainBitch(nearestStripper, v.type, v.time)
+                                MakeItRain(nearestStripper, v.type, v.time)
                             end
 
                             exports['sandbox-hud']:InteractionHide()
@@ -182,7 +182,7 @@ RegisterNetEvent('Businesses:Client:PoleDance', function(dance)
     end
 end)
 
-function MakeItRainBitch(targetSource, cashType, time)
+function MakeItRain(targetSource, cashType, time)
     local targetPlayer = GetPlayerFromServerId(targetSource)
     if targetPlayer == -1 then return end
 

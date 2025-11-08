@@ -126,7 +126,7 @@ export default ({ onNav }) => {
             // setResults({
             //     properties: [{
             //         "_id": "62518e75841f5a4cb4eb3b41",
-            //         "label": "Lol Cunt",
+            //         "label": "Lovely House",
             //         "sold": false,
             //         "type": "house",
             //         "location": {
@@ -158,7 +158,7 @@ export default ({ onNav }) => {
             //         "sold": true,
             //         "type": "house",
             //         "price": 10,
-            //         "label": "fuck",
+            //         "label": "John's House",
             //         "interior": 40,
             //         "keys": {
             //           "621aa10ecf57fe19e42a4ca7": {

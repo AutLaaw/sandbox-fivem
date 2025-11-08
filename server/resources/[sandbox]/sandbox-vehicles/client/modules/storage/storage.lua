@@ -697,14 +697,14 @@ AddEventHandler("Vehicles:Client:Storage:Select", function(data)
 
             if vehicle.LastDriver and #vehicle.LastDriver > 0 then
                 local fhId = vehicle.VIN .. '-fleet-history'
-                local shitCunt = {}
+                local vehicleCheck = {}
 
                 local timeNow = GetCloudTimeAsInt() or 0
                 for i = #vehicle.LastDriver, 1, -1 do
                     local driver = vehicle.LastDriver[i]
                     local timeString = GetFormattedTimeFromSeconds(timeNow - driver.time)
 
-                    table.insert(shitCunt, {
+                    table.insert(vehicleCheck, {
                         label = string.format('Driver SID: %s', driver.char),
                         description = string.format('Returned Vehicle %s Ago', timeString),
                         event = false,
@@ -713,7 +713,7 @@ AddEventHandler("Vehicles:Client:Storage:Select", function(data)
 
                 subMenu[fhId] = {
                     label = (vehicle.RegisteredPlate or 'Vehicle') .. ' Fleet History',
-                    items = shitCunt
+                    items = vehicleCheck
                 }
 
                 table.insert(vehItems, {

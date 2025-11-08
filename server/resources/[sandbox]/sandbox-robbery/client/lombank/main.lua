@@ -36,7 +36,7 @@ function IsLBPowerDisabled()
 end
 
 AddEventHandler("Robbery:Client:Setup", function()
-	exports['sandbox-polyzone']:CreatePoly("dumbcunt", {
+	exports['sandbox-polyzone']:CreatePoly("sandbox-coke-garage", {
 		vector2(-316.5087890625, -2439.6040039062),
 		vector2(-319.24176025391, -2436.7438964844),
 		vector2(-326.0520324707, -2431.16796875),

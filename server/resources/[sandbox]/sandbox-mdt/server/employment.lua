@@ -130,22 +130,22 @@ AddEventHandler("MDT:Server:RegisterCallbacks", function()
 		if char and data and data.SID and (hasPerms or isSystemAdmin) and newJobData then
 			local charData = exports['sandbox-mdt']:PeopleView(data.SID)
 			if charData then
-				local canDoItBitch = false
+				local canDoIt = false
 				if isSystemAdmin then
-					canDoItBitch = true
+					canDoIt = true
 				else
 					local plyrJob = exports['sandbox-jobs']:HasJob(source, loggedInJob)
 					for k, v in ipairs(charData.Jobs) do
 						if v.Id == data.JobId then
 							if plyrJob.Grade.Level > v.Grade.Level and plyrJob.Grade.Level > newJobData.Grade.Level then
-								canDoItBitch = true
+								canDoIt = true
 							end
 							break
 						end
 					end
 				end
 
-				if canDoItBitch then
+				if canDoIt then
 					local updated = exports['sandbox-jobs']:GiveJob(data.SID, newJobData.Id, newJobData.Workplace.Id,
 						newJobData.Grade.Id)
 

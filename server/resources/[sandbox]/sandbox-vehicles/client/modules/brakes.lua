@@ -1,4 +1,4 @@
--- -- TODO: OPTIMIZE THIS SHIT.
+-- -- TODO: OPTIMIZE THIS CODE.
 
 -- -- This variable will store a small table for each player that just contains the vehicle entity and
 -- -- the ped.

@@ -167,15 +167,15 @@ function RegisterCallbacks()
                 local results = MySQL.query.await(query)
                 
                 if results and #results > 0 then
-                    local dumbShit = {}
+                    local dumbStuff = {}
                     for k, v in ipairs(results) do
-                        dumbShit[v.SID] = v
+                        dumbStuff[v.SID] = v
                     end
                 
                     cb(vehicles, {
                         current = exports['sandbox-vehicles']:OwnedPropertiesGetCount(storageId),
                         max = maxParking or 0
-                    }, characterId, dumbShit)
+                    }, characterId, dumbStuff)
                 else
                     cb(false)
                 end

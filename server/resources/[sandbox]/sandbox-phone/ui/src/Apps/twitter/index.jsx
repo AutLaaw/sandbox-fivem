@@ -79,7 +79,7 @@ const testTweets = [
 		},
 		time: 1618740407000,
 		content:
-			'@Arch #FuckArch https://i.imgur.com/OsHuv0I.jpg <script>alert("&")</script> ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in',
+			'@Arch #Arch https://i.imgur.com/OsHuv0I.jpg <script>alert("&")</script> ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in',
 		likes: Array(),
 	},
 	{

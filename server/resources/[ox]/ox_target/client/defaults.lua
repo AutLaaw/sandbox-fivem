@@ -884,7 +884,7 @@ Config.VehicleMenu = {
                 and exports['sandbox-vehicles']:HasAccess(entity.entity)
         end,
         text = "Open Wardrobe",
-        event = "Wardrobe:Client:ShowBitch",
+        event = "Wardrobe:Client:ShowWardrobe",
         data = {},
         minDist = 2.0,
     },

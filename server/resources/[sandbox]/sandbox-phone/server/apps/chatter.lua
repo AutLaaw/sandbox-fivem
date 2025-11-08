@@ -396,36 +396,36 @@ AddEventHandler("Phone:Server:RegisterCallbacks", function()
 	end)
 
 	exports["sandbox-base"]:RegisterServerCallback("Chatter:Invite:Accept", function(source, data, cb)
-		local cunt = tonumber(data)
+		local invite = tonumber(data)
 		local char = exports['sandbox-characters']:FetchCharacterSource(source)
 		if char ~= nil then
 			local sid = char:GetData("SID")
 
 			_invites[sid] = _invites[sid] or {}
 
-			if _invites[sid][cunt] ~= nil then
+			if _invites[sid][invite] ~= nil then
 				MySQL.insert("INSERT INTO character_chatter_groups (sid, chatty_group) VALUES(?, ?)", {
 					sid,
-					cunt,
+					invite,
 				})
 
 				_groups[sid] = _groups[sid] or {}
 
 				local tmp = {
-					id = cunt,
-					label = _groupData[cunt].label,
-					icon = _groupData[cunt].icon,
-					owner = _groupData[cunt].owner,
+					id = invite,
+					label = _groupData[invite].label,
+					icon = _groupData[invite].icon,
+					owner = _groupData[invite].owner,
 					joined_date = os.time(),
 					last_message = nil,
 				}
 
 				table.insert(_groups[sid], tmp)
 
-				_groupsOnline[cunt] = _groupsOnline[cunt] or {}
-				_groupsOnline[cunt][source] = sid
+				_groupsOnline[invite] = _groupsOnline[invite] or {}
+				_groupsOnline[invite][source] = sid
 
-				_invites[sid][cunt] = nil
+				_invites[sid][invite] = nil
 
 				cb(tmp)
 			else

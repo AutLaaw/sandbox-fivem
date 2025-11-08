@@ -8,7 +8,7 @@ _loanConfig = {
 	loanDefaulting = {
 		charge = 15, -- As Percent of original loan amount
 	},
-	paymentInterval = (60 * 60 * 24 * 7), -- 7 days bitch
+	paymentInterval = (60 * 60 * 24 * 7), -- 7 days
 }
 
 _creditScoreConfig = {

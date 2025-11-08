@@ -1,6 +1,6 @@
 _pickups = {}
 
-local _retards = {
+local _jobcheck = {
 	police = true,
 	ems = true,
 	government = true,
@@ -92,7 +92,7 @@ function SetupQueues()
 					if char ~= nil then
 						local pState = Player(src).state
 
-						if not _retards[pState.onDuty] then
+						if not _jobcheck[pState.onDuty] then
 							local states = char:GetData("States") or {}
 							if
 								_received[v.id][char:GetData("SID")]

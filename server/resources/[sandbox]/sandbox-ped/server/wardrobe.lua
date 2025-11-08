@@ -9,7 +9,7 @@ end)
 
 function RegisterChatCommands()
 	exports["sandbox-chat"]:RegisterAdminCommand("wardrobe", function(source, args, rawCommand)
-		TriggerClientEvent("Wardrobe:Client:ShowBitch", source)
+		TriggerClientEvent("Wardrobe:Client:ShowWardrobe", source)
 	end, {
 		help = "Test Notification",
 	})
