@@ -240,7 +240,7 @@ function InitBizPhones()
 	for k, v in ipairs(bP) do
 		_bizPhoneNumbers[v.id] = v.number
 		_bizPhoneNumbersCheck[v.number] = v.id
-		GlobalState[string.format("BizPhone:%s:Muted", v.id)] = v.muted
+		GlobalState[("BizPhone:%s:Muted"):format(v.id)] = (v.muted == 1 or v.muted == true)
 	end
 
 	local trans = {}

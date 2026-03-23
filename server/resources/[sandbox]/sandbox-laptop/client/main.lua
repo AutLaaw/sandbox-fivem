@@ -46,10 +46,7 @@ AddEventHandler("Characters:Client:Updated", function()
 	_settings = LocalPlayer.state.Character:GetData("LaptopSettings")
 	exports['sandbox-laptop']:SetData("player", LocalPlayer.state.Character:GetData())
 
-	if
-		LocalPlayer.state.laptopOpen
-		and not (exports.ox_inventory:Search('count', 'laptop') == 0)
-	then
+	if LocalPlayer.state.laptopOpen and (exports.ox_inventory:Search('count', 'laptop') == 0) then
 		exports['sandbox-laptop']:Close(true)
 	end
 end)
@@ -78,7 +75,7 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 end)
 
 AddEventHandler("UI:Client:Close", function(context)
-	if context ~= "laptop" then
+	if context == "laptop" then
 		exports['sandbox-laptop']:Close()
 	end
 end)

@@ -21,3 +21,8 @@ yarn.lock
 server/created_doors_data.txt
 
 /server/db
+server/server.ptr.cfg
+server/server.ptr.cfg
+server/resources/\[sandbox\]/sandbox-phone/server/bizphone.lua
+server/resources/\[sandbox\]/sandbox-dealerships/server/sales.lua
+server/config/database.ptr.cfg

@@ -7,6 +7,29 @@ RegisterNUICallback("SoundEnd", function(data, cb)
 	end
 end)
 
+local function toVec3(v)
+    if not v then return nil end
+
+    -- if someone sent coords as json string
+    if type(v) == 'string' then
+        local ok, decoded = pcall(json.decode, v)
+        if ok and decoded then
+            v = decoded
+        end
+    end
+
+    -- if someone sent coords as table {x=..., y=..., z=...}
+    if type(v) == 'table' then
+        local x, y, z = v.x, v.y, v.z
+        if x and y and z then
+            return vector3(tonumber(x) or 0.0, tonumber(y) or 0.0, tonumber(z) or 0.0)
+        end
+    end
+
+    -- if already a vector3, just return it
+    return v
+end
+
 exports("PlayOne", function(soundFile, soundVolume)
 	exports['sandbox-base']:LoggerTrace("Sounds", ("^2Playing Sound %s On Client Only^7"):format(soundFile))
 	_sounds[LocalPlayer.state.ID] = _sounds[LocalPlayer.state.ID] or {}
@@ -63,13 +86,35 @@ exports("LoopDistance", function(maxDistance, soundFile, soundVolume)
 	})
 end)
 
-exports("LoopLocation", function(location, maxDistance, soundFile, soundVolume)
-	exports["sandbox-base"]:ServerCallback("Sounds:Loop:Location", {
-		location = location,
-		maxDistance = maxDistance,
-		soundFile = soundFile,
-		soundVolume = soundVolume,
-	})
+exports("LoopLocation", function(a, b, c, d, e)
+    local key, location, maxDistance, soundFile, soundVolume
+
+    -- LoopLocation(key, location, maxDistance, file, vol)
+    if type(a) == "string" then
+        key = a
+        location = b
+        maxDistance = c
+        soundFile = d
+        soundVolume = e
+    else
+        -- LoopLocation(location, maxDistance, file, vol)
+        key = nil
+        location = a
+        maxDistance = b
+        soundFile = c
+        soundVolume = d
+    end
+
+    local loc = toVec3(location)
+    if not loc then return end
+
+    exports["sandbox-base"]:ServerCallback("Sounds:Loop:Location", {
+        playerNetId = key, -- ✅ use key
+        location = { x = loc.x, y = loc.y, z = loc.z },
+        maxDistance = tonumber(maxDistance) or 0.0,
+        soundFile = soundFile,
+        soundVolume = tonumber(soundVolume) or 0.0,
+    })
 end)
 
 exports("StopOne", function(soundFile)
@@ -85,15 +130,17 @@ exports("StopOne", function(soundFile)
 end)
 
 exports("StopDistance", function(pNet, soundFile)
-	exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
-		soundFile = soundFile,
-	})
+    exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
+        playerNetId = pNet,
+        soundFile = soundFile,
+    })
 end)
 
 exports("StopLocation", function(pNet, soundFile)
-	exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
-		soundFile = soundFile,
-	})
+    exports["sandbox-base"]:ServerCallback("Sounds:Stop:Distance", {
+        playerNetId = pNet,
+        soundFile = soundFile,
+    })
 end)
 
 exports("FadeOne", function(soundFile)
@@ -308,49 +355,41 @@ function DoLoopDistance(playerNetId, maxDistance, soundFile, soundVolume)
 end
 
 function DoLoopLocation(playerNetId, location, maxDistance, soundFile, soundVolume)
-	exports['sandbox-base']:LoggerTrace(
-		("^2Looping Sound %s Per Request From %s at location %s For Distance %s^7"):format(
-			soundFile,
-			playerNetId,
-			json.encode(location),
-			maxDistance
-		)
-	)
-	local distIs = #(GetEntityCoords(LocalPlayer.state.ped) - location)
-	local vol = soundVolume * (1.0 - (distIs / maxDistance))
-	if distIs > maxDistance then
-		vol = 0
-	end
+    location = toVec3(location)
+    maxDistance = tonumber(maxDistance) or 0.0
+    soundVolume = tonumber(soundVolume) or 0.0
 
-	_sounds[playerNetId] = _sounds[playerNetId] or {}
-	_sounds[playerNetId][soundFile] = {
-		file = soundFile,
-		volume = soundVolume,
-		distance = maxDistance,
-	}
-	SendNUIMessage({
-		action = "loopSound",
-		source = playerNetId,
-		file = soundFile,
-		volume = vol,
-	})
+    if not location then return end
 
-	CreateThread(function()
-		while _sounds[playerNetId] ~= nil and _sounds[playerNetId][soundFile] ~= nil do
-			local distIs = #(GetEntityCoords(LocalPlayer.state.ped) - location)
-			vol = soundVolume * (1.0 - (distIs / maxDistance))
-			if distIs > maxDistance or not LocalPlayer.state.loggedIn then
-				vol = 0
-			end
-			SendNUIMessage({
-				action = "updateVol",
-				source = playerNetId,
-				file = soundFile,
-				volume = vol,
-			})
-			Wait(100)
-		end
-	end)
+    exports['sandbox-base']:LoggerTrace(
+        ("^2Looping Sound %s Per Request From %s at location %s For Distance %s^7"):format(
+            soundFile,
+            playerNetId,
+            json.encode(location),
+            maxDistance
+        )
+    )
+
+    local ped = PlayerPedId()
+    local distIs = #(GetEntityCoords(ped) - location)
+    local vol = soundVolume * (1.0 - (distIs / maxDistance))
+    if distIs > maxDistance then vol = 0 end
+
+    _sounds[playerNetId] = _sounds[playerNetId] or {}
+    _sounds[playerNetId][soundFile] = { file = soundFile, volume = soundVolume, distance = maxDistance }
+
+    SendNUIMessage({ action = "loopSound", source = playerNetId, file = soundFile, volume = vol })
+
+    CreateThread(function()
+        while _sounds[playerNetId] and _sounds[playerNetId][soundFile] do
+            local distIs2 = #(GetEntityCoords(PlayerPedId()) - location)
+            local vol2 = soundVolume * (1.0 - (distIs2 / maxDistance))
+            if distIs2 > maxDistance or not LocalPlayer.state.loggedIn then vol2 = 0 end
+
+            SendNUIMessage({ action = "updateVol", source = playerNetId, file = soundFile, volume = vol2 })
+            Wait(100)
+        end
+    end)
 end
 
 function DoStopDistance(playerNetId, soundFile)
@@ -365,6 +404,19 @@ function DoStopDistance(playerNetId, soundFile)
 		})
 	end
 end
+
+RegisterNetEvent("Sounds:Client:DoLoopLocation", function(playerNetId, location, maxDistance, soundFile, soundVolume)
+    -- convert location to vector3
+    if type(location) == 'string' then
+        local ok, decoded = pcall(json.decode, location)
+        if ok and decoded then location = decoded end
+    end
+    if type(location) == 'table' then
+        location = vector3(tonumber(location.x) or 0.0, tonumber(location.y) or 0.0, tonumber(location.z) or 0.0)
+    end
+
+    DoLoopLocation(playerNetId, location, tonumber(maxDistance) or 0.0, soundFile, tonumber(soundVolume) or 0.0)
+end)
 
 RegisterNetEvent("Sounds:Client:Play:One", function(playerNetId, soundFile, soundVolume)
 	DoPlayDistance(playerNetId, soundFile, soundVolume)

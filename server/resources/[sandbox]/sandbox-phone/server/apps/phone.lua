@@ -1,6 +1,17 @@
 local _calls = {}
 local _bizCallHandlers = {} -- The people who answered the business call
 
+local function normalizePhoneNumber(num)
+    if not num then return nil end
+    -- keep it consistent with your generator/format (you use ###-###-####)
+    return tostring(num)
+end
+
+local function getBizIdFromNumber(number)
+    number = normalizePhoneNumber(number)
+    return number and _bizPhoneNumbersCheck[number] or nil
+end
+
 exports("CallEnd", function(source, business)
 	if business then
 		if _bizPhones[business] and _bizPhones[business].call then

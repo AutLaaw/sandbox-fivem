@@ -1,5 +1,20 @@
-local phoneModel = `vw_prop_casino_phone_01a`
+local phoneModel = `v_ret_gc_phone`
 local _createdPhones = {}
+
+local function HasBizAccess(jobName)
+    if not LocalPlayer.state.loggedIn then return false end
+
+    if type(LocalPlayer.state.onDuty) == "string" then
+        return LocalPlayer.state.onDuty == jobName
+    end
+
+    local jobs = LocalPlayer.state.jobs
+    if type(jobs) == "table" and jobs[jobName] then
+        return true
+    end
+
+    return false
+end
 
 function CreateBizPhoneObject(coords, rotation)
     RequestModel(phoneModel)
@@ -7,10 +22,11 @@ function CreateBizPhoneObject(coords, rotation)
         Wait(1)
     end
 
-    local obj = CreateObject(phoneModel, coords.x, coords.y, coords.z, false, true, false)
-    SetEntityRotation(obj, rotation.x, rotation.y, rotation.z)
+    local obj = CreateObject(phoneModel, coords.x, coords.y, coords.z, false, false, false)
+    SetEntityCoordsNoOffset(obj, coords.x, coords.y, coords.z, false, false, false)
+    SetEntityRotation(obj, rotation.x, rotation.y, rotation.z, 2, true)
     FreezeEntityPosition(obj, true)
-    SetEntityCoords(obj, coords.x, coords.y, coords.z)
+    SetEntityAsMissionEntity(obj, true, true)
 
     while not DoesEntityExist(obj) do
         Wait(1)
@@ -24,115 +40,78 @@ function CreateBizPhones()
         Wait(100)
     end
 
-    for k, v in pairs(GlobalState.BizPhones) do
+    for _, v in pairs(GlobalState.BizPhones) do
         local object = CreateBizPhoneObject(v.coords, v.rotation)
 
-        exports.ox_target:addEntity(object, {
+        exports.ox_target:addLocalEntity(object, {
             {
-                icon = "phone-volume",
-                label = "Phone",
+                icon = "phone",
+                label = "Answer Call",
                 onSelect = function()
-                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
+                    TriggerEvent("Phone:Client:AcceptBizCall", nil, { id = v.id })
                 end,
-                groups = { v.job },
-                canInteract = function(data)
-                    if data then
-                        local pData = GlobalState[string.format("BizPhone:%s", data.id)]
-                        if pData and pData.state > 1 then
-                            return true
-                        end
-                    end
-                end,
-                label = function(data)
-                    if data then
-                        local pData = GlobalState[string.format("BizPhone:%s", data.id)]
-                        if pData then
-                            if pData.state == 2 then
-                                return string.format("On Call (%s)", pData.callingStr)
-                            else
-                                return string.format("Dialing (%s)", pData.number)
-                            end
-                        end
-                    end
-                    return ""
+                canInteract = function()
+                    local pData = GlobalState[("BizPhone:%s"):format(v.id)]
+                    return HasBizAccess(v.job) and pData and pData.state == 1
                 end,
             },
             {
                 icon = "phone",
                 label = "Make Call",
-                event = "Phone:Client:MakeBizCall",
                 onSelect = function()
-                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
+                    TriggerEvent("Phone:Client:MakeBizCall", nil, { id = v.id })
                 end,
-                groups = { v.job },
-                canInteract = function(data)
-                    if data then
-                        local pData = GlobalState[string.format("BizPhone:%s", data.id)]
-                        if not pData then
-                            return true
-                        end
-                    end
+                canInteract = function()
+                    local pData = GlobalState[("BizPhone:%s"):format(v.id)]
+                    return HasBizAccess(v.job) and not pData
                 end,
             },
             {
-                icon = "phone",
-                label = "Answer Phone",
+                icon = "phone-volume",
+                label = "Dialing…",
                 onSelect = function()
-                    TriggerEvent("Phone:Client:AcceptBizCall", { id = v.id })
+                    TriggerEvent("Phone:Client:MakeBizCall", { id = v.id })
                 end,
-                groups = { v.job },
-                canInteract = function(data)
-                    if data then
-                        local pData = GlobalState[string.format("BizPhone:%s", data.id)]
-                        if pData and pData.state == 1 then
-                            return true
-                        end
+                canInteract = function()
+                    local pData = GlobalState[("BizPhone:%s"):format(v.id)]
+                    return HasBizAccess(v.job) and pData and pData.state > 1 and pData.state ~= 2
+                end,
+            },
+            {
+                icon = "phone-volume",
+                label = "On Call",
+                onSelect = function()
+                     local pData = GlobalState[("BizPhone:%s"):format(v.id)]
+                    if pData then
+                        exports["sandbox-hud"]:Notification("inform", ("On Call: %s"):format(pData.callingStr or "Unknown"))
                     end
                 end,
-                label = function(data)
-                    if data then
-                        local pData = GlobalState[string.format("BizPhone:%s", data.id)]
-                        if pData and pData.state == 1 then
-                            return string.format("Answer Call From %s", pData.callingStr)
-                        end
-                    end
-                    return ""
+                canInteract = function()
+                    local pData = GlobalState[("BizPhone:%s"):format(v.id)]
+                    return HasBizAccess(v.job) and pData and pData.state == 2
                 end,
             },
             {
                 icon = "phone",
                 label = "Hang Up",
                 onSelect = function()
-                    TriggerEvent("Phone:Client:DeclineBizCall", { id = v.id })
+                    TriggerEvent("Phone:Client:DeclineBizCall", nil, { id = v.id })
                 end,
-                groups = { v.job },
-                canInteract = function(data)
-                    if data then
-                        local pData = GlobalState[string.format("BizPhone:%s", data.id)]
-                        if pData then
-                            return true
-                        end
-                    end
+                canInteract = function()
+                    local pData = GlobalState[("BizPhone:%s"):format(v.id)]
+                    return HasBizAccess(v.job) and pData ~= nil
                 end,
             },
             {
                 icon = "phone-slash",
-                label = "Mute Phone",
-                event = "Phone:Client:MuteBiz",
+                label = "Toggle Mute",
                 onSelect = function()
-                    TriggerEvent("Phone:Client:MuteBiz", { id = v.id })
+                    TriggerEvent("Phone:Client:MuteBiz", nil, { id = v.id })
                 end,
-                groups = { v.job },
-                label = function(data)
-                    if data then
-                        local pData = GlobalState[string.format("BizPhone:%s:Muted", data.id)]
-                        if pData then
-                            return "Unmute Phone"
-                        end
-                    end
-                    return "Mute Phone"
+                canInteract = function()
+                    return HasBizAccess(v.job)
                 end,
-            }
+            },
         })
 
         table.insert(_createdPhones, object)
@@ -140,12 +119,12 @@ function CreateBizPhones()
 end
 
 function CleanupBizPhones()
-    for k, v in ipairs(_createdPhones) do
-        if DoesEntityExist(v) then
-            DeleteEntity(v)
+    for _, ent in ipairs(_createdPhones) do
+        if DoesEntityExist(ent) then
+            exports.ox_target:removeLocalEntity(ent)
+            DeleteEntity(ent)
         end
     end
-
     _createdPhones = {}
 end
 
@@ -212,7 +191,7 @@ AddEventHandler("Phone:Client:MakeBizCallConfirm", function(values, data)
     end
 end)
 
-RegisterNetEvent("Phone:Client:Phone:AcceptBizCall", function(number)
+RegisterNetEvent("Phone:Client:AcceptBizCall", function(number)
     if LocalPlayer.state.bizCall then
         exports['sandbox-hud']:InfoOverlayShow("On Call", string.format("To Number: %s", number))
         exports["sandbox-sounds"]:StopOne("ringing.ogg")
@@ -220,15 +199,29 @@ RegisterNetEvent("Phone:Client:Phone:AcceptBizCall", function(number)
 end)
 
 RegisterNetEvent("Phone:Client:Biz:Recieve", function(id, coords, radius)
-    if LocalPlayer.state.loggedIn and not GlobalState[string.format("BizPhone:%s:Muted", id)] then
-        local myCoords = GetEntityCoords(LocalPlayer.state.ped)
-        if #(myCoords - coords) <= 150.0 then
-            exports["sandbox-sounds"]:LoopLocation(string.format("bizphones-%s", id), coords, radius, "bizphone.ogg", 0.1)
-            SetTimeout(30000, function()
-                exports["sandbox-sounds"]:StopDistance(string.format("bizphones-%s", id), "bizphone.ogg")
-            end)
-        end
+    if not LocalPlayer.state.loggedIn or GlobalState[("BizPhone:%s:Muted"):format(id)] then return end
+
+    -- Coerce coords into vector3 (handles table or json-string coords)
+    if type(coords) == 'string' then
+        local ok, decoded = pcall(json.decode, coords)
+        if ok and decoded then coords = decoded end
     end
+    if type(coords) == 'table' then
+        coords = vector3(coords.x + 0.0, coords.y + 0.0, coords.z + 0.0)
+    end
+
+    radius = tonumber(radius) or 15.0
+
+    local ped = PlayerPedId()
+    local myCoords = GetEntityCoords(ped)
+
+    if #(myCoords - coords) <= 150.0 then
+        exports["sandbox-sounds"]:LoopLocation(("bizphones-%s"):format(id), coords, radius, "bizphone.ogg", 0.1)
+        SetTimeout(30000, function()
+            exports["sandbox-sounds"]:StopDistance(("bizphones-%s"):format(id), "bizphone.ogg")
+        end)
+    end
+    print("BIZ RING coords type:", type(coords), coords)
 end)
 
 AddEventHandler("Phone:Client:DeclineBizCall", function(entityData, data)
