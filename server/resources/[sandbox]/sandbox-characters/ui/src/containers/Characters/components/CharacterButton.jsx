@@ -18,51 +18,153 @@ import { SelectCharacter, DeleteCharacter } from '../../../util/NuiEvents';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
-		width: 300,
+		width: 310,
 		height: 100,
-		padding: 5,
-		lineHeight: '25px',
+		padding: 0,
 		display: 'inline-flex',
-		background: `${theme.palette.secondary.dark}80`,
-		borderLeft: `2px solid ${theme.palette.secondary.light}`,
-		transition: 'border ease-in 0.15s',
+		background: `linear-gradient(135deg, ${theme.palette.secondary.dark}98 0%, ${theme.palette.secondary.dark}92 100%)`,
+		borderRadius: 8,
+		border: `1px solid ${theme.palette.secondary.light}30`,
+		transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 		userSelect: "none",
-		'&:not(:last-of-type)': {
-			marginRight: 4,
+		boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+		overflow: 'hidden',
+		position: 'relative',
+		'&::before': {
+			content: '""',
+			position: 'absolute',
+			left: 0,
+			top: 0,
+			bottom: 0,
+			width: 3,
+			background: `linear-gradient(180deg, ${theme.palette.secondary.light}60 0%, ${theme.palette.secondary.light}20 100%)`,
+			transition: 'all 0.3s ease',
 		},
 		'&.active': {
-			borderColor: theme.palette.primary.main,
+			borderColor: `${theme.palette.primary.main}60`,
+			boxShadow: `0 4px 16px ${theme.palette.primary.main}40, 0 0 0 1px ${theme.palette.primary.main}30, inset 0 1px 0 rgba(255, 255, 255, 0.08)`,
+			'&::before': {
+				background: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.main}80 100%)`,
+				boxShadow: `0 0 10px ${theme.palette.primary.main}60`,
+			},
 		},
 		'&:hover': {
-			borderColor: theme.palette.primary.dark,
+			transform: 'translateY(-2px)',
+			borderColor: `${theme.palette.primary.dark}50`,
+			boxShadow: '0 6px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
 			cursor: 'pointer',
+			'&::before': {
+				background: `linear-gradient(180deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.dark}70 100%)`,
+				width: 4,
+			},
 		},
 	},
 	stateId: {
-		width: 48,
-		display: 'block',
-		fontSize: 18,
-		padding: 5,
-		paddingLeft: 0,
+		width: 60,
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		fontSize: 24,
+		fontWeight: 700,
 		textAlign: 'center',
-		borderRight: `1px solid ${theme.palette.border.divider}`,
-		lineHeight: '85px',
+		background: 'rgba(0, 0, 0, 0.2)',
+		borderRight: `1px solid ${theme.palette.border.divider}40`,
+		color: theme.palette.primary.main,
+		textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
 	},
 	details: {
-		padding: 5,
+		padding: '8px 10px',
+		flex: 1,
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-evenly',
 	},
 	detail: {
-		lineHeight: '24px',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
+		whiteSpace: 'nowrap',
 		'&.name': {
-			fontSize: 18,
+			fontSize: 19,
+			fontWeight: 700,
+			color: theme.palette.text.main,
+			textShadow: '0 2px 6px rgba(0, 0, 0, 0.5)',
+			letterSpacing: '0.5px',
+			lineHeight: 1.2,
 		},
 		'&.job': {
-			fontSize: 14,
+			fontSize: 12.5,
+			opacity: 0.8,
+			color: theme.palette.text.alt,
+			display: 'flex',
+			alignItems: 'center',
+			fontWeight: 500,
 		},
 		'&.played': {
-			fontSize: 14,
+			fontSize: 11.5,
+			opacity: 0.65,
+			color: theme.palette.text.alt,
+			fontWeight: 400,
 			'& small': {
-				fontSize: 12,
+				fontSize: 11,
+				opacity: 0.95,
+				fontWeight: 500,
+			},
+		},
+	},
+ 	deleteDialog: {
+		'& .MuiDialog-paper': {
+			background: `linear-gradient(135deg, ${theme.palette.secondary.dark}98 0%, ${theme.palette.secondary.dark}95 100%)`,
+			borderRadius: 12,
+			border: `1px solid ${theme.palette.error.main}40`,
+			boxShadow: `0 12px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px ${theme.palette.error.main}20`,
+			minWidth: 480,
+		},
+		'& .MuiDialogTitle-root': {
+			fontSize: 24,
+			fontWeight: 700,
+			color: theme.palette.text.main,
+			textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+			padding: '24px 28px 16px',
+			borderBottom: `1px solid ${theme.palette.border.divider}30`,
+		},
+		'& .MuiDialogContent-root': {
+			padding: '24px 28px',
+		},
+		'& .MuiDialogContentText-root': {
+			color: theme.palette.text.alt,
+			fontSize: 15,
+			lineHeight: 1.6,
+		},
+		'& .MuiDialogActions-root': {
+			padding: '16px 28px 24px',
+			gap: 12,
+		},
+		'& .MuiButton-root': {
+			borderRadius: 8,
+			padding: '10px 24px',
+			fontSize: 14,
+			fontWeight: 700,
+			textTransform: 'uppercase',
+			letterSpacing: '0.8px',
+			transition: 'all 0.3s ease',
+			minWidth: 100,
+		},
+		'& .MuiButton-colorInherit': {
+			background: 'rgba(255, 255, 255, 0.08)',
+			border: `1px solid ${theme.palette.border.divider}40`,
+			'&:hover': {
+				background: 'rgba(255, 255, 255, 0.12)',
+				transform: 'translateY(-1px)',
+				boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+			},
+		},
+		'& .MuiButton-colorPrimary': {
+			background: `linear-gradient(135deg, ${theme.palette.error.main} 0%, ${theme.palette.error.dark} 100%)`,
+			border: `1px solid ${theme.palette.error.light}40`,
+			color: theme.palette.text.main,
+			'&:hover': {
+				boxShadow: `0 4px 16px ${theme.palette.error.main}50`,
+				transform: 'translateY(-1px)',
 			},
 		},
 	},
@@ -147,25 +249,29 @@ export default ({ character }) => {
 						)}
 					</div>
 				</div>
-				<Dialog open={open} onClose={() => setOpen(false)}>
-					<DialogTitle>{`Delete ${character.First} ${character.Last}?`}</DialogTitle>
+				<Dialog 
+					open={open} 
+					onClose={() => setOpen(false)}
+					className={classes.deleteDialog}
+				>
+					<DialogTitle>Delete Character</DialogTitle>
 					<DialogContent>
 						<DialogContentText>
-							Are you sure you want to delete {character.First}{' '}
-							{character.Last}? This action is completely &
-							entirely irreversible by{' '}
-							<i>
-								<b>anyone</b>
-							</i>{' '}
-							including staff. Proceed?
+							Are you sure you want to permanently delete{' '}
+							<strong style={{ color: '#fff' }}>
+								{character.First} {character.Last}
+							</strong>
+							?
+							<br /><br />
+							This action is <strong>completely irreversible</strong> and cannot be undone by anyone, including staff members.
 						</DialogContentText>
 					</DialogContent>
 					<DialogActions>
 						<Button onClick={() => setOpen(false)} color="inherit">
-							No
+							Cancel
 						</Button>
 						<Button onClick={onDelete} color="primary" autoFocus>
-							Yes
+							Delete
 						</Button>
 					</DialogActions>
 				</Dialog>

@@ -9,28 +9,56 @@ import { STATE_CREATE } from '../../../util/States';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
+		width: 100,
 		height: 100,
-		padding: 5,
-		lineHeight: '25px',
-		display: 'inline-block',
-		background: `${theme.palette.secondary.dark}80`,
-		borderLeft: `2px solid ${theme.palette.success.main}`,
+		display: 'inline-flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		justifyContent: 'center',
+		background: `linear-gradient(135deg, ${theme.palette.secondary.dark}98 0%, ${theme.palette.secondary.dark}90 100%)`,
+		borderRadius: 8,
+		border: `1.5px dashed ${theme.palette.success.main}50`,
 		textAlign: 'center',
-		marginRight: 15,
+		transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+		boxShadow: '0 3px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+		position: 'relative',
+		overflow: 'hidden',
+		'&::before': {
+			content: '""',
+			position: 'absolute',
+			inset: 0,
+			background: `radial-gradient(circle at center, ${theme.palette.success.main}20 0%, transparent 70%)`,
+			opacity: 0,
+			transition: 'opacity 0.3s ease',
+		},
 		'&:hover': {
-			borderColor: theme.palette.success.dark,
+			transform: 'translateY(-2px)',
+			borderColor: theme.palette.success.main,
+			borderStyle: 'solid',
+			boxShadow: `0 6px 20px rgba(0, 0, 0, 0.5), 0 0 16px ${theme.palette.success.main}25, inset 0 1px 0 rgba(255, 255, 255, 0.08)`,
 			cursor: 'pointer',
+			'&::before': {
+				opacity: 1,
+			},
+			'& $icon': {
+				transform: 'rotate(90deg) scale(1.15)',
+			},
 		},
 	},
-	details: {
-		padding: '5px 5px 5px 10px',
-		fontSize: 22,
-		lineHeight: '85px',
-
-		'& svg': {
-			marginRight: 8,
-			color: theme.palette.success.main,
-		},
+	icon: {
+		fontSize: 32,
+		color: theme.palette.success.main,
+		transition: 'transform 0.3s ease',
+		filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))',
+	},
+	label: {
+		fontSize: 12,
+		marginTop: 8,
+		color: theme.palette.success.main,
+		fontWeight: 600,
+		textTransform: 'uppercase',
+		letterSpacing: '0.5px',
+		textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
 	},
 }));
 
@@ -48,9 +76,8 @@ export default () => {
 	return (
 		<Fade in={true}>
 			<div className={classes.container} onClick={onClick}>
-				<div className={classes.details}>
-					<FontAwesomeIcon icon="plus-circle" />
-				</div>
+				<FontAwesomeIcon icon="plus-circle" className={classes.icon} />
+				<div className={classes.label}>Create</div>
 			</div>
 		</Fade>
 	);

@@ -10,33 +10,39 @@ import logo from '../../assets/imgs/logo_banner.png';
 const useStyles = makeStyles((theme) => ({
 	container: {
 		height: 'fit-content',
-		width: 800,
+		width: 600,
 		position: 'absolute',
 		bottom: 0,
 		top: 0,
 		left: 0,
 		right: 0,
 		margin: 'auto',
-		background: theme.palette.secondary.dark,
-		borderLeft: `4px solid ${theme.palette.primary.main}`,
+		background: `linear-gradient(135deg, ${theme.palette.secondary.dark}98 0%, ${theme.palette.secondary.dark}95 100%)`,
+		borderRadius: 12,
+		border: `1px solid ${theme.palette.primary.main}40`,
+		boxShadow: `0 12px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px ${theme.palette.primary.main}20`,
+		overflow: 'hidden',
 	},
 	details: {
 		width: '100%',
-		padding: 25,
+		padding: '32px 40px',
 		textAlign: 'center',
 	},
 	label: {
 		color: theme.palette.text.main,
-		fontSize: 28,
-		textShadow: '0 0 5px #000',
+		fontSize: 22,
+		fontWeight: 600,
+		textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
 		textAlign: 'center',
-		padding: 15,
+		marginTop: 24,
 	},
 	img: {
-		maxWidth: 450,
+		maxWidth: 350,
 		width: '100%',
-		borderBottom: `2px solid ${theme.palette.border.divider}`,
-		marginBottom: 15,
+		filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5))',
+	},
+	progressContainer: {
+		padding: '0 40px 32px',
 	},
 }));
 
@@ -47,12 +53,15 @@ export default () => {
 	const message = useSelector((state) => state.loader.message);
 
 	const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-		height: 4,
+		height: 6,
+		borderRadius: 3,
 		[`&.${linearProgressClasses.colorPrimary}`]: {
-			backgroundColor: theme.palette.secondary.dark,
+			backgroundColor: 'rgba(0, 0, 0, 0.3)',
 		},
 		[`& .${linearProgressClasses.bar}`]: {
 			backgroundColor: theme.palette.primary.main,
+			borderRadius: 3,
+			boxShadow: `0 0 10px ${theme.palette.primary.main}40`,
 		},
 	}));
 
@@ -61,15 +70,17 @@ export default () => {
 		<Fade in={true} duration={1000}>
 			<div className={classes.container}>
 				<div className={classes.details}>
-					<img className={classes.img} src={logo} />
+					<img className={classes.img} src={logo} alt="Logo" />
 					<div className={classes.label}>{message}</div>
 				</div>
-				<BorderLinearProgress
-					classes={{
-						bar: classes.progressbar,
-						bar1: classes.progressbar,
-					}}
-				/>
+				<div className={classes.progressContainer}>
+					<BorderLinearProgress
+						classes={{
+							bar: classes.progressbar,
+							bar1: classes.progressbar,
+						}}
+					/>
+				</div>
 			</div>
 		</Fade>
 	);

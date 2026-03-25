@@ -16,89 +16,105 @@ import { CreateCharacter } from '../../util/NuiEvents';
 const useStyles = makeStyles((theme) => ({
 	wrapper: {
 		width: 650,
-		height: 650,
+		height: 'fit-content',
+		maxHeight: '85vh',
 		position: 'absolute',
 		top: 0,
 		bottom: 0,
 		right: 0,
 		left: 0,
 		margin: 'auto',
-		background: theme.palette.secondary.dark,
-		borderLeft: `4px solid ${theme.palette.primary.main}`,
+		background: `linear-gradient(135deg, ${theme.palette.secondary.dark}98 0%, ${theme.palette.secondary.dark}95 100%)`,
+		borderRadius: 12,
+		border: `1px solid ${theme.palette.primary.main}40`,
+		boxShadow: `0 12px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px ${theme.palette.primary.main}20`,
+		overflow: 'hidden',
+		display: 'flex',
+		flexDirection: 'column',
 	},
 	createForm: {
-		margin: 25,
+		padding: '24px 32px 20px',
+		overflowY: 'auto',
+		'&::-webkit-scrollbar': {
+			width: 6,
+		},
+		'&::-webkit-scrollbar-thumb': {
+			background: `${theme.palette.primary.main}60`,
+			borderRadius: 3,
+		},
+		'&::-webkit-scrollbar-track': {
+			background: 'rgba(0, 0, 0, 0.2)',
+		},
 	},
 	title: {
-		textAlign: 'center',
-		borderBottom: `2px solid ${theme.palette.border.divider}`,
-		fontSize: 26,
-		paddingBottom: 15,
-		marginBottom: 15,
+		fontSize: 24,
+		fontWeight: 700,
+		paddingBottom: 16,
+		marginBottom: 18,
+		color: theme.palette.text.main,
+		textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+		borderBottom: `1px solid ${theme.palette.border.divider}30`,
 	},
 	button: {
 		fontSize: 14,
-		lineHeight: '20px',
-		fontWeight: '500',
-		display: 'inline-block',
-		padding: '10px 20px',
-		borderRadius: 3,
+		fontWeight: 700,
+		padding: '10px 24px',
+		borderRadius: 8,
 		userSelect: 'none',
-		margin: 10,
-		width: '40%',
+		minWidth: 100,
+		textAlign: 'center',
+		cursor: 'pointer',
+		transition: 'all 0.3s ease',
+		textTransform: 'uppercase',
+		letterSpacing: '0.8px',
 		'&:disabled': {
-			opacity: 0.5,
+			opacity: 0.4,
 			cursor: 'not-allowed',
+		},
+		'&:hover:not(:disabled)': {
+			transform: 'translateY(-1px)',
 		},
 	},
 	positive: {
-		border: `2px solid ${theme.palette.success.dark}`,
-		background: theme.palette.success.main,
+		background: `linear-gradient(135deg, ${theme.palette.success.main} 0%, ${theme.palette.success.dark} 100%)`,
+		border: `1px solid ${theme.palette.success.light}40`,
 		color: theme.palette.text.dark,
-		fontSize: 20,
-		padding: 10,
-		width: 105,
-		textAlign: 'center',
-		transition: 'filter ease-in 0.15s',
-		'&:hover': {
-			background: theme.palette.success.main,
-			filter: 'brightness(0.7)',
+		'&:hover:not(:disabled)': {
+			boxShadow: `0 4px 16px ${theme.palette.success.main}50`,
 		},
 	},
 	negative: {
-		border: `2px solid ${theme.palette.error.dark}`,
-		background: theme.palette.error.main,
+		background: 'rgba(255, 255, 255, 0.08)',
+		border: `1px solid ${theme.palette.border.divider}40`,
 		color: theme.palette.text.main,
-		fontSize: 20,
-		padding: 10,
-		width: 105,
-		textAlign: 'center',
-		transition: 'filter ease-in 0.15s',
-		'&:hover': {
-			background: theme.palette.error.main,
-			filter: 'brightness(0.7)',
+		'&:hover:not(:disabled)': {
+			background: 'rgba(255, 255, 255, 0.12)',
+			transform: 'translateY(-1px)',
+			boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
 		},
+	},
+	actionData: {
+		padding: '18px 32px 22px',
+		display: 'flex',
+		justifyContent: 'flex-end',
+		gap: 12,
 	},
 	form: {
 		display: 'flex',
-		justifyContent: 'space-evenly',
-		padding: '1% 0',
 		flexWrap: 'wrap',
+		gap: 16,
 	},
 	formControl: {
-		width: '45%',
+		width: 'calc(50% - 9px)',
 		display: 'block',
-		margin: 10,
 	},
 	formControlFull: {
-		width: '94%',
+		width: '100%',
 		display: 'block',
-		margin: 10,
 	},
 	formControl2: {
-		width: '94%',
+		width: '100%',
 		display: 'block',
-		margin: 10,
 	},
 	input: {
 		width: '100%',
@@ -290,25 +306,22 @@ export default () => {
 								}}
 							/>
 						</FormControl>
-						<FormControl className={classes.formControl2}>
+						{/* <FormControl className={classes.formControl2}>
 							<TextField
 								className={classes.input}
 								required
 								label="Character Biography"
 								name="bio"
 								multiline
-								rows="4"
+								rows="3"
 								value={state.bio}
 								onChange={onChange}
 								variant="outlined"
 							/>
-						</FormControl>
+						</FormControl> */}
 					</form>
 				</div>
-				<div
-					className={classes.actionData}
-					style={{ textAlign: 'center' }}
-				>
+				<div className={classes.actionData}>
 					<button
 						type="button"
 						className={`${classes.button} ${classes.negative}`}

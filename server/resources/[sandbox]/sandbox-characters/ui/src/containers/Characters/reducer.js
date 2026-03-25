@@ -70,8 +70,8 @@ export const initialState = {
 	changelog: null,
 	motd: process.env.NODE_ENV == 'production' ? null : 'This is a test :)',
 	selected: {
-		SID: 2,
-		ID: '606e8a3c8144f19ec0aeeecf',
+		SID: 1,
+		ID: '606e8a3c8144f19ec0aeeece',
 		User: '606c22a749c1c980e8289b35',
 		First: 'Test',
 		Last: 'Test',
